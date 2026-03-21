@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aarav Dandona | Portfolio</title>
+    <!-- Importing a chunky, geometric font perfect for neo-brutalism -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Pixel Cursors using inline SVGs */
+        :root {
+            --bg-color: #fdf5e6; /* Harsh off-white/beige */
+            --black: #000000;
+            --white: #ffffff;
+            
+            /* Project Colors */
+            --c-blue: #3b82f6;
+            --c-red: #ef4444;
+            --c-green: #22c55e;
+            --c-pink: #ff90e8;
+            --c-yellow: #eab308;
+
+            /* Pixel cursor defaults */
+            --cursor-default: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="2,2 2,20 8,14 12,22 16,20 12,12 20,12" fill="black" stroke="white" stroke-width="1.5"/></svg>'), auto;
+            --cursor-pointer: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M9,2 L13,2 L13,6 L17,6 L17,10 L21,10 L21,15 L17,15 L17,21 L13,21 L13,17 L9,17 L9,21 L5,21 L5,15 L1,15 L1,10 L5,10 L5,6 L9,6 Z" fill="black" stroke="white" stroke-width="1.5"/></svg>'), pointer;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: var(--cursor-default);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--black);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Elements that should have the pointer cursor */
+        a, button, .folder {
+            cursor: var(--cursor-pointer);
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--white);
+            border: 4px solid var(--black);
+            box-shadow: 8px 8px 0px var(--black);
+            margin: 2rem;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        h2 {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 700;
+            border-top: 4px solid var(--black);
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+            display: inline-block;
+        }
+
+        /* --- DESKTOP GRID (FOLDERS) --- */
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 3rem;
+            align-content: start;
+        }
+
+        .folder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.15s ease-out;
+            position: relative;
+        }
+
+        .folder-icon {
+            width: 100px;
+            height: 80px;
+            background-color: var(--folder-color, var(--white));
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+            position: relative;
+            margin-bottom: 1rem;
+            transition: all 0.1s ease;
+        }
+
+        /* The little folder tab on top */
+        .folder-icon::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -4px;
+            width: 40%;
+            height: 15px;
+            background-color: inherit;
+            border: 4px solid var(--black);
+            border-bottom: none;
+        }
+
+        .folder-label {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: var(--white);
+            padding: 0.2rem 0.5rem;
+            border: 2px solid var(--black);
+        }
+
+        /* Neo-brutalist hover/click effects */
+        .folder:hover .folder-icon {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px var(--black);
+        }
+        
+        .folder:active .folder-icon {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px var(--black);
+        }
+
+        /* --- MODAL (THE POPUP WINDOW) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-window {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--white);
+            border: 4px solid var(--black);
+            box-shadow: 16px 16px 0px var(--black);
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            background: var(--c-red);
+            color: var(--black);
+            border: 3px solid var(--black);
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: 900;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.1s;
+        }
+
+        .close-btn:hover {
+            background: var(--white);
+        }
+
+        .close-btn:active {
+            transform: translate(2px, 2px);
+        }
+
+        .window-body {
+            padding: 3rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .massive-title {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            word-wrap: break-word;
+            text-shadow: 4px 4px 0px var(--white), 8px 8px 0px var(--black);
+        }
+
+        .window-desc {
+            font-size: 1.5rem;
+            font-weight: 700;
+            max-width: 80%;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 1rem;
+            border: 3px solid var(--black);
+        }
+
+        .redirect-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 1.5rem 3rem;
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--black);
+            background-color: var(--white);
+            border: 4px solid var(--black);
+            box-shadow: 8px 8px 0px var(--black);
+            transition: all 0.1s;
+        }
+
+        .redirect-btn:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--black);
+        }
+
+        .redirect-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--black);
+        }
+
+        /* --- FOOTER / SOCIALS --- */
+        footer {
+            margin: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .social-link {
+            flex: 1;
+            min-width: 250px;
+            background: var(--white);
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.1s;
+        }
+
+        .social-link:hover {
+            background: var(--c-yellow);
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px var(--black);
+        }
+        
+        .social-link:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--black);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            header, footer { margin: 1rem; }
+            .window-body { padding: 2rem 1rem; }
+            .redirect-btn { font-size: 1.2rem; padding: 1rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Aarav Dandona</h1>
+        <h2>14 years old, SPM 2029</h2>
+    </header>
+
+    <main id="desktop">
+        <!-- Folders will be injected here by JavaScript -->
+    </main>
+
+    <footer>
+        <a href="mailto:aarav@dando.in" class="social-link">
+            <span>Email</span>
+            <span>aarav@dando.in</span>
+        </a>
+        <a href="https://instagram.com/aaravdando" target="_blank" class="social-link" style="background: var(--c-pink);">
+            <span>Instagram</span>
+            <span>@aaravdando</span>
+        </a>
+        <a href="https://x.com/aaravdandonax" target="_blank" class="social-link" style="background: var(--c-blue); color: white;">
+            <span>X / Twitter</span>
+            <span>@aaravdandonax</span>
+        </a>
+    </footer>
+
+    <!-- The Window Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-window">
+            <div class="window-header">
+                <span id="windowPath">C:\Projects\file.exe</span>
+                <button class="close-btn" id="closeBtn">X</button>
+            </div>
+            <div class="window-body" id="windowBody">
+                <div class="massive-title" id="modalTitle">TITLE</div>
+                <div class="window-desc" id="modalDesc">Description goes here.</div>
+                <div>
+                    <a href="#" target="_blank" class="redirect-btn" id="modalBtn">Launch Project</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Project Data Configuration
+        const projects = [
+            { id: 'insta', title: 'POST CREATOR', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
+            { id: 'f1', title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
+            { id: 'game', title: 'CAR JUMP', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
+            { id: 'wishlist', title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
+            { id: 'dannoskill', title: 'DANNOSKILL', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
+        ];
+
+        const desktop = document.getElementById('desktop');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        const windowPath = document.getElementById('windowPath');
+        const windowBody = document.getElementById('windowBody');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalBtn = document.getElementById('modalBtn');
+
+        // Render folders onto the desktop
+        projects.forEach(proj => {
+            const folderDiv = document.createElement('div');
+            folderDiv.className = 'folder';
+            folderDiv.innerHTML = `
+                <div class="folder-icon" style="--folder-color: ${proj.color}"></div>
+                <div class="folder-label">${proj.title}</div>
+            `;
+            
+            // Click event to open the specific window
+            folderDiv.addEventListener('click', () => {
+                openWindow(proj);
+            });
+
+            desktop.appendChild(folderDiv);
+        });
+
+        // Function to populate and open the window
+        function openWindow(project) {
+            windowPath.innerText = `C:\\Projects\\${project.id}.exe`;
+            windowBody.style.backgroundColor = project.color;
+            modalTitle.innerText = project.title;
+            modalDesc.innerText = project.desc;
+            modalBtn.href = project.url;
+            
+            // Display modal
+            modalOverlay.style.display = 'flex';
+        }
+
+        // Close functions
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+
+        // Close if user clicks the overlay outside the window
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
