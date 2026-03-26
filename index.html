@@ -342,14 +342,14 @@
 
     <script>
         // Project Data Configuration
-        const projects = [
-            { id: 'insta', title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
-            { id: 'f1', title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
-            { id: 'game', title: 'IWOKEUPINANEWBUGGATI', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
-            { id: 'react', title: 'REACTION APP', desc: 'A web-based studio to record video reactions with custom PiP, split-screen, and dynamic auto-cut layouts.', url: 'https://react.dando.in', color: '#6366f1' }
-            { id: 'wishlist', title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
-            { id: 'dannoskill', title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
-        ];
+const projects = [
+    { id: 'insta', title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
+    { id: 'f1', title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
+    { id: 'game', title: 'IWOKEUPINANEWBUGGATI', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
+    { id: 'react', title: 'REACTION APP', desc: 'A web-based studio to record video reactions with custom PiP, split-screen, and dynamic auto-cut layouts.', url: 'https://react.dando.in', color: '#6366f1' }, // <--- Missing comma was right here
+    { id: 'wishlist', title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
+    { id: 'dannoskill', title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
+];
 
         const desktop = document.getElementById('desktop');
         const modalOverlay = document.getElementById('modalOverlay');
