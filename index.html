@@ -340,16 +340,37 @@
         </div>
     </div>
 
-    <script>
+<script>
         // Project Data Configuration
-const projects = [
-    { id: 'insta', title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
-    { id: 'f1', title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
-    { id: 'game', title: 'IWOKEUPINANEWBUGGATI', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
-    { id: 'react', title: 'REACTION APP', desc: 'A web-based studio to record video reactions with custom PiP, split-screen, and dynamic auto-cut layouts.', url: 'https://react.dando.in', color: '#6366f1' }, // <--- Missing comma was right here
-    { id: 'wishlist', title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
-    { id: 'dannoskill', title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
-];
+        // Added 'aliases' to handle common misspellings and shorthand names
+        const projects = [
+            { id: 'insta', aliases: ['instaflow', 'instagram', 'inst', 'intsaflow'], title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
+            { id: 'f1', aliases: ['formula1', 'formula-1', 'f1graphics'], title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
+            { id: 'game', aliases: ['bugatti', 'buggati', 'cargame', 'play'], title: 'IWOKEUPINANEWBUGGATI', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
+            // Updated the react URL to your github.io link
+            { id: 'react', aliases: ['reaction', 'reactapp', 'rec', 'ract'], title: 'REACTION APP', desc: 'A web-based studio to record video reactions with custom PiP, split-screen, and dynamic auto-cut layouts.', url: 'https://aaravdioxide.github.io/react/', color: '#6366f1' }, 
+            { id: 'wishlist', aliases: ['wish', 'gift', 'gifts', 'wishes'], title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
+            { id: 'dannoskill', aliases: ['danno', 'dan', 'fansite', 'skill'], title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
+        ];
+
+        // --- REDIRECT LOGIC ---
+        // 1. Grab the path from the URL (e.g., "react" from "dando.in/react")
+        // 2. Remove leading/trailing slashes and make it lowercase
+        const currentPath = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
+
+        // If there is a path typed into the URL...
+        if (currentPath !== '') {
+            // Check if the path matches a project's ID OR one of its aliases
+            const matchedProject = projects.find(p => 
+                p.id === currentPath || (p.aliases && p.aliases.includes(currentPath))
+            );
+
+            // If a match is found, redirect immediately
+            if (matchedProject) {
+                window.location.replace(matchedProject.url);
+            }
+        }
+        // ----------------------
 
         const desktop = document.getElementById('desktop');
         const modalOverlay = document.getElementById('modalOverlay');
@@ -361,7 +382,7 @@ const projects = [
         const modalDesc = document.getElementById('modalDesc');
         const modalBtn = document.getElementById('modalBtn');
 
-        // Render folders onto the desktop
+        // Render folders onto the desktop (Only runs if no redirect happened)
         projects.forEach(proj => {
             const folderDiv = document.createElement('div');
             folderDiv.className = 'folder';
