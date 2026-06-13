@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dando.in</title>
-    <!-- Importing a chunky, geometric font perfect for neo-brutalism -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* Custom Pixel Cursors using inline SVGs */
@@ -253,6 +252,20 @@
             box-shadow: 0px 0px 0px var(--black);
         }
 
+        /* Disabled Button Style for Updating Projects */
+        .redirect-btn.disabled {
+            background-color: #d1d5db;
+            color: #6b7280;
+            border-color: #6b7280;
+            box-shadow: 4px 4px 0px #6b7280;
+            cursor: not-allowed;
+        }
+        
+        .redirect-btn.disabled:hover, .redirect-btn.disabled:active {
+            transform: none;
+            box-shadow: 4px 4px 0px #6b7280;
+        }
+
         /* --- FOOTER / SOCIALS --- */
         footer {
             margin: 2rem;
@@ -305,8 +318,7 @@
     </header>
 
     <main id="desktop">
-        <!-- Folders will be injected here by JavaScript -->
-    </main>
+        </main>
 
     <footer>
         <a href="mailto:aarav@dando.in" class="social-link">
@@ -323,7 +335,6 @@
         </a>
     </footer>
 
-    <!-- The Window Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-window">
             <div class="window-header">
@@ -342,35 +353,36 @@
 
 <script>
         // Project Data Configuration
-        // Added 'aliases' to handle common misspellings and shorthand names
         const projects = [
-            { id: 'insta', aliases: ['instaflow', 'instagram', 'inst', 'intsaflow'], title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram.', url: 'https://insta.dando.in', color: 'var(--c-pink)' },
+            // Notice the "isUpdating: true" flag added to InstaFlow
+            { id: 'insta', aliases: ['instaflow', 'instagram', 'inst', 'intsaflow'], title: 'InstaFlow', desc: 'A custom tool to create and manage posts for Instagram. (Currently under maintenance 🚧)', url: 'https://insta.dando.in', color: 'var(--c-pink)', isUpdating: true },
             { id: 'f1', aliases: ['formula1', 'formula-1', 'f1graphics'], title: 'F1 GRAPHICS', desc: 'Graphics maker dedicated to Formula 1.', url: 'https://f1.dando.in', color: 'var(--c-red)' },
             { id: 'game', aliases: ['bugatti', 'buggati', 'cargame', 'play'], title: 'IWOKEUPINANEWBUGGATI', desc: 'A small little car game where you have to jump obstacles.', url: 'https://game.dando.in', color: 'var(--c-green)' },
-            // Updated the react URL to your github.io link
             { id: 'react', aliases: ['reaction', 'reactapp', 'rec', 'ract'], title: 'REACTION APP', desc: 'A web-based studio to record video reactions with custom PiP, split-screen, and dynamic auto-cut layouts.', url: 'https://aaravdioxide.github.io/react/', color: '#6366f1' }, 
             { id: 'wishlist', aliases: ['wish', 'gift', 'gifts', 'wishes'], title: 'WISHLIST', desc: 'A wishlist of all things I want. Feel free to gift me!', url: 'https://wishlist.dando.in', color: 'var(--c-blue)' },
-            { id: 'dannoskill', aliases: ['danno', 'dan', 'fansite', 'skill'], title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' }
+            { id: 'dannoskill', aliases: ['danno', 'dan', 'fansite', 'skill'], title: 'DANNOSKILL FANSITE', desc: 'A fan site I made for one of my favorite F1 creators.', url: 'https://dannoskill.com', color: 'var(--c-yellow)' },
+            { id: 'tambola', aliases: ['bingo', 'housie', 'numbers'], title: 'TAMBOLA', desc: 'Basically a simple, classic web-based Tambola game.', url: 'https://tambola.dando.in', color: '#a855f7' },
+            { id: 'arena', aliases: ['fight', 'shooter', 'survival', '2dgame'], title: 'ARENA', desc: 'A 2D survival game where you have to defeat enemies and win.', url: 'https://arena.dando.in', color: '#f97316' }
         ];
 
         // --- REDIRECT LOGIC ---
-        // 1. Grab the path from the URL (e.g., "react" from "dando.in/react")
-        // 2. Remove leading/trailing slashes and make it lowercase
         const currentPath = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
 
-        // If there is a path typed into the URL...
         if (currentPath !== '') {
-            // Check if the path matches a project's ID OR one of its aliases
             const matchedProject = projects.find(p => 
                 p.id === currentPath || (p.aliases && p.aliases.includes(currentPath))
             );
 
-            // If a match is found, redirect immediately
             if (matchedProject) {
-                window.location.replace(matchedProject.url);
+                // Intercept the redirect if the project is updating
+                if (matchedProject.isUpdating) {
+                    alert(`${matchedProject.title} is currently down for an update. Check back soon!`);
+                    window.location.replace('/'); 
+                } else {
+                    window.location.replace(matchedProject.url);
+                }
             }
         }
-        // ----------------------
 
         const desktop = document.getElementById('desktop');
         const modalOverlay = document.getElementById('modalOverlay');
@@ -382,7 +394,7 @@
         const modalDesc = document.getElementById('modalDesc');
         const modalBtn = document.getElementById('modalBtn');
 
-        // Render folders onto the desktop (Only runs if no redirect happened)
+        // Render folders onto the desktop
         projects.forEach(proj => {
             const folderDiv = document.createElement('div');
             folderDiv.className = 'folder';
@@ -405,7 +417,17 @@
             windowBody.style.backgroundColor = project.color;
             modalTitle.innerText = project.title;
             modalDesc.innerText = project.desc;
-            modalBtn.href = project.url;
+            
+            // Handle the UI state if the project is updating
+            if (project.isUpdating) {
+                modalBtn.innerText = "UPDATING...";
+                modalBtn.href = "#";
+                modalBtn.classList.add('disabled');
+            } else {
+                modalBtn.innerText = "Launch Project";
+                modalBtn.href = project.url;
+                modalBtn.classList.remove('disabled');
+            }
             
             // Display modal
             modalOverlay.style.display = 'flex';
